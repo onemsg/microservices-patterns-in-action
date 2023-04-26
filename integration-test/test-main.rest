@@ -1,0 +1,35 @@
+@ORDER_SERVICE = http://localhost:7701/api/order
+@CONSMER_SERVICE = http://localhost:7702
+
+### 订单
+GET {{ORDER_SERVICE}}/5
+X-Auth-UserId: 1002
+
+###
+GET {{ORDER_SERVICE}}
+X-Auth-UserId: 1001
+
+
+###
+POST {{ORDER_SERVICE}}
+X-Auth-UserId: 1001
+Content-Type: application/json
+
+{
+    "foods": [100, 200, 300, 400],
+    "restaurantId": 103
+}
+
+###
+PATCH  {{ORDER_SERVICE}}/8/cancel
+X-Auth-UserId: 1001
+
+### 消费者服务
+
+###
+GET {{CONSMER_SERVICE}}/api/consumer/verify
+Content-Type: application/json
+
+{
+    "fa" : 4
+}

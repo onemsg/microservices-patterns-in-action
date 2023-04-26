@@ -1,0 +1,5 @@
+order:
+  create:
+    url: http://localhost:7001/api/order
+  cancel:
+    url: http://localhost:7001/api/order/{}/cancel
