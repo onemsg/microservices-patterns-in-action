@@ -1,10 +1,12 @@
 package com.onemsg.vertxservice;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.onemsg.vertxservice.kitchen.KitchenController;
+import com.onemsg.vertxservice.patterns.AsyncJobWorkerVerticle;
+import com.onemsg.vertxservice.web.ExceptionHandler;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
@@ -29,18 +31,24 @@ public class MainVerticle extends AbstractVerticle{
 
         router.route().handler(LoggerHandler.create(LoggerFormat.TINY));
         router.route().handler(BodyHandler.create());
+        router.route("/api/*").failureHandler(ExceptionHandler.create());
         router.route().failureHandler(ErrorHandler.create(vertx));
-        router.route().blockingHandler(null, false);
 
         KitchenController kitchenController = new KitchenController();
         kitchenController.mount(router);
-        
-        vertx.createHttpServer(new HttpServerOptions())
+
+        var f1 = vertx.createHttpServer(new HttpServerOptions())
             .requestHandler(router)
             .listen(PORT)
             .onSuccess(http -> {
                 log.info("Server running on http://localhost:{}", http.actualPort());
             });
+            
+        var f2 = vertx.deployVerticle(AsyncJobWorkerVerticle.class, new DeploymentOptions().setInstances(2));
+
+        Future.all(f1, f2)
+            .onSuccess(f -> startPromise.complete())
+            .onFailure(startPromise::fail);
+
     }
-    
 }

@@ -1,0 +1,1 @@
+mvn install -f common-service\pom.xml

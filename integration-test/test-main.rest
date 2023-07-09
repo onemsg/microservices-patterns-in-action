@@ -1,6 +1,9 @@
 @ORDER_SERVICE = http://localhost:7701/api/order
 @CONSMER_SERVICE = http://localhost:7702
 
+@JAVA_SERVICE = http://localhost:7701
+@VERTX_SERVICE = http://localhost:7703
+
 ### 订单
 GET {{ORDER_SERVICE}}/5
 X-Auth-UserId: 1002
@@ -33,3 +36,23 @@ Content-Type: application/json
 {
     "fa" : 4
 }
+
+### 测试 异步请求-答复模式
+
+### 查看job
+GET {{JAVA_SERVICE}}/api/asyncwork?jobId=bcbafe74-1603-4c09-86df-bf3d31b21d2b
+
+### 创建新job
+POST {{JAVA_SERVICE}}/api/asyncwork
+Content-Type: application/json
+
+{
+    "name": "TestJob-8",
+    "value": "value-8"
+}
+
+### 查看job状态
+GET {{JAVA_SERVICE}}/api/asyncwork/state?jobId=8cd7d2b4-540a-4517-9202-79a2ac7507cc
+
+### 查看job结果
+GET {{JAVA_SERVICE}}/api/asyncwork/result?jobId=bcbafe74-1603-4c09-86df-bf3d31b21d2b

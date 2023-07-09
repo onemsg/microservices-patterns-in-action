@@ -1,0 +1,6 @@
+@VERTX_SERVICE = http://localhost:7703
+
+Get {{VERTX_SERVICE}}/api/exception
+
+###
+GET {{VERTX_SERVICE}}/api/thread-info

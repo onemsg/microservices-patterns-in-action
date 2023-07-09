@@ -1,6 +1,6 @@
 # 微服务设计模式练兵场
 
-这个项目用来个人编程实践学习微服务设计模式，多语言支持。
+这个项目用来个人编程实践学习微服务设计模式，多语言、多框架支持。
 
 - [java-service](java-service/readme.md) - 微服务 Spring 实现
 - [node-service](node-service/readme.md) - 微服务 NodeJS 实现
@@ -11,6 +11,7 @@
 - `script` - 脚本
 - `integration-test` - 集成测试
 - `env.json` - 环境变量
+- `setup-env.ps1` - 初始化终端的环境变量
 - `service.yaml` - 服务定义
 
 基础设施 | 实现
@@ -18,9 +19,14 @@
 配置 | 环境变量
 同步通信 | REST
 存储 | 内存对象, MySQL
-消息代理 | Pulsar
+消息代理 | Pulsar, Kafka
 测试 | restclient, py scripts
 
+
+## 已实践的设计模式
+
+- Saga 模式
+- 异步请求-答复模式
 
 ## 微服务设计模式相关资料
 
