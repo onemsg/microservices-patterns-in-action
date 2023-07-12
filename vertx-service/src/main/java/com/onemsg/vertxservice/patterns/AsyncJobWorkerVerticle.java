@@ -1,11 +1,11 @@
 package com.onemsg.vertxservice.patterns;
 
-import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Future;
 
 import com.onemsg.commonservice.mq.Topics;
 import com.onemsg.commonservice.mq.event.AsyncWorkEvent;
@@ -21,6 +21,14 @@ import io.vertx.core.json.Json;
 import io.vertx.kafka.client.consumer.KafkaConsumer;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * AsyncJobWorkerVerticle
+ * 
+ * <p>
+ * 实现 <a href=
+ * "https://learn.microsoft.com/zh-cn/azure/architecture/patterns/async-request-reply">
+ * 异步请求-答复模式 </a>
+ */
 @Slf4j
 public class AsyncJobWorkerVerticle extends AbstractVerticle {
 
@@ -48,6 +56,18 @@ public class AsyncJobWorkerVerticle extends AbstractVerticle {
         consumer.subscribe(Topics.ASYNC_JOB_TOPIC)
             .onSuccess(startPromise::complete)
             .onFailure(startPromise::fail);
+
+        vertx.eventBus().<String>localConsumer("health-check")
+            .handler(msg -> {
+                if (Objects.equals("kafka", msg.body() )) {
+                    consumer.listTopics()
+                        .onSuccess(v ->msg.reply("OK"))
+                        .onFailure(e -> msg.fail(500, e.getMessage()));
+                }
+            });
+
+        // ScheduledExecutorService
+        Future f = null;
     }
 
 

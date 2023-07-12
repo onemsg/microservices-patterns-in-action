@@ -23,9 +23,11 @@ public class ExceptionHandler implements Handler<RoutingContext> {
         Throwable t = ctx.failure();
         if (t instanceof StatusResponseException e) {
             end(ctx, e.status(), e.reason(), null);
+        } else if (t instanceof StatusCodeResponseException e) {
+            ctx.response().setStatusCode(e.status()).end();
         } else if (t != null) {
             HttpServerRequest request = ctx.request();
-            log.warn("Handle {} {} happened a exception", request.method(), request.path(), t);
+            log.warn("Handle request failed - {} {}", request.method(), request.path(), t);
             int statusCode = ctx.statusCode() == -1 ? 500 : ctx.statusCode();
             end(ctx, statusCode, "服务器内部错误", t.getMessage());
         } else {
@@ -33,7 +35,6 @@ public class ExceptionHandler implements Handler<RoutingContext> {
             ctx.response().setStatusCode(statusCode).end();
         }
     }
-
 
     private static void end(RoutingContext ctx, int statusCode, String message, String detail) {
         if (ctx.response().ended()) return;

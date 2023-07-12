@@ -2,13 +2,8 @@ package com.onemsg.vertxservice;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ThreadTest {
@@ -25,7 +20,7 @@ public class ThreadTest {
             
             // 这里会IO阻塞，会打印这时候的线程状态
             Socket socket = serverSocket.accept();
-
+            
             var in = socket.getInputStream();
             var out = socket.getOutputStream();
             
@@ -66,13 +61,29 @@ public class ThreadTest {
 
     public static void main(String[] args) throws Exception {
 
-        
+        Thread t = new Thread(() -> {
+            for (int i = 0; i < 100; i++) {
+                ThreadLocalRandom.current().ints(10000).sorted().sum();
+                System.out.print(i + " ");
+                if (Thread.currentThread().interrupted()) {
+                    System.out.println(Thread.currentThread() + "被打断了");
+                    // return;
+                }
+            }
+            System.out.println("Execution OK");
+        });
+
+        t.start();
+        Thread.sleep(20);
+        t.interrupt();
+        Thread.sleep(20);
+        t.interrupt();
     }
 
 
     public static void printThreadStateAfter(Thread thread, long millis) {
         Executors.newSingleThreadExecutor().submit(() -> {
-            sleep(200);
+            sleep(millis);
             System.out.println(thread + ": " + thread.getState());
         });
     }

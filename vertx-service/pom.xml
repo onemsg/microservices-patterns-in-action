@@ -44,6 +44,27 @@
 
   <dependencies>
 
+  <dependency>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-auth-htpasswd</artifactId>
+  </dependency>
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-health-check</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-redis-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+      <version>3.1.6</version>
+    </dependency>
+
     <dependency>
       <groupId>com.onemsg</groupId>
       <artifactId>common-server</artifactId>

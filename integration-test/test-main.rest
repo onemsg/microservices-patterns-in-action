@@ -56,3 +56,17 @@ GET {{JAVA_SERVICE}}/api/asyncwork/state?jobId=8cd7d2b4-540a-4517-9202-79a2ac750
 
 ### 查看job结果
 GET {{JAVA_SERVICE}}/api/asyncwork/result?jobId=bcbafe74-1603-4c09-86df-bf3d31b21d2b
+
+### 健康检查
+GET {{VERTX_SERVICE}}/health
+
+### 测试 速率限制模式
+
+###
+GET {{VERTX_SERVICE}}/api/test-data
+X-Auth-UserId: vertx
+X-LoadTest: true
+
+###
+GET {{VERTX_SERVICE}}/api/test-data
+X-Auth-UserId: spring
