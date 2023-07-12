@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.onemsg</groupId>
-  <artifactId>java-service</artifactId>
+  <artifactId>vertx-service</artifactId>
   <version>1.1.0-DEV</version>
 
   <properties>

@@ -37,38 +37,38 @@ public class RedisRateLimitHandler implements RateLimitHandler{
         String userId = context.user().get("userId");
 
         tryAcquire(userId)
-            .onComplete(ar -> {
-                if (ar.succeeded()) {
-                    var limitDetail = ar.result();
-                    RateLimitHandler.addHeadersEndHandler(context, limitDetail);
-                    if (limitDetail.canAccess()) {
-                        context.next();
-                    } else {
-                        RateLimitHandler.endLimited(context);
-                    }
+            .onSuccess(limitDetail -> {
+                RateLimitHandler.addHeadersEndHandler(context, limitDetail);
+                if (limitDetail.canAccess()) {
+                    context.next();
                 } else {
-                    context.fail(ar.cause());
+                    RateLimitHandler.endLimited(context);
                 }
-            });
-
+            }).onFailure(context::fail);
     }
 
     private Future<LimitDetail> tryAcquire(String userId) {
         String key = "rl:userid:" + userId;
         return sendEval(key, limit, duration)
-            .compose(Future::succeededFuture, t -> loadScript().compose(res -> sendEval(key, limit, duration)))
+            .compose(Future::succeededFuture, t -> {
+                if ( t.getMessage().contains("NOSCRIPT") ) {
+                    return loadScript().compose(res -> sendEval(key, limit, duration));
+                } else {
+                    return Future.failedFuture(t);
+                }
+            })
             .map( res -> {
                 int count = res.get(0).toInteger();
                 long reset = res.get(1).toLong();
                 return new LimitDetail(limit, count, reset);
             });
     }
-
+    
     private Future<Response> sendEval(String key, int limit, long duration) {
         return redis.send(Request.cmd(Command.EVALSHA, scriptSHA.toString(), 1, key, limit, duration));
     }
 
-    private Future<Response> loadScript() throws StatusCodeResponseException {
+    private Future<Response> loadScript() {
         String script = null;
         try {
             var bytes = RedisRateLimitHandler.class.getResourceAsStream(SCRIPT_CLASSPATH).readAllBytes();
@@ -78,7 +78,12 @@ public class RedisRateLimitHandler implements RateLimitHandler{
             return Future.failedFuture(StatusCodeResponseException.create(500));
         }
         return redis.send(Request.cmd(Command.SCRIPT, "load", script))
-            .onSuccess(res -> scriptSHA.set(res.toString()));
+            .onSuccess(res -> {
+                scriptSHA.set(res.toString());
+                log.info("Redis script load success - {}", res);
+            }).onFailure(t -> {
+                log.error("Redis script load failed - {}", t);
+            });
     }
 
 }

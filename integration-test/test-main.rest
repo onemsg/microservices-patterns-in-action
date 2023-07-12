@@ -65,8 +65,10 @@ GET {{VERTX_SERVICE}}/health
 ###
 GET {{VERTX_SERVICE}}/api/test-data
 X-Auth-UserId: vertx
-X-LoadTest: true
 
 ###
 GET {{VERTX_SERVICE}}/api/test-data
-X-Auth-UserId: spring
+X-Auth-UserId: bad-user
+
+###
+GET {{VERTX_SERVICE}}/api/test-data

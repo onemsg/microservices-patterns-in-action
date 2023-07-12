@@ -61,7 +61,7 @@ public interface RateLimitHandler extends Handler<RoutingContext> {
     }
 
     /**
-     * End response with status code 428
+     * End response with status code 429
      * @param context
      */
     public static void endLimited(RoutingContext context) {
