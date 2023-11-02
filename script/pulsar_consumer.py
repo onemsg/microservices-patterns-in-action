@@ -36,5 +36,3 @@ while True:
     except Exception:
         # Message failed to be processed
         consumer.negative_acknowledge(msg)
-
-client.close()

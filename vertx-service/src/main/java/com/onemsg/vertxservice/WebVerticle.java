@@ -5,6 +5,7 @@ import java.util.Map;
 import com.onemsg.vertxservice.kitchen.KitchenController;
 import com.onemsg.vertxservice.patterns.RateLimitHandler;
 import com.onemsg.vertxservice.patterns.SimpleAuthHandler;
+import com.onemsg.vertxservice.web.CollectEventHandler;
 import com.onemsg.vertxservice.web.ExceptionHandler;
 import com.onemsg.vertxservice.web.FilterLoggerHandler;
 
@@ -52,6 +53,8 @@ public class WebVerticle extends AbstractVerticle{
             context.json(Map.of("data", "test-data"));
         });
         router.route().failureHandler(ErrorHandler.create(vertx));
+
+        router.route("/collect-event").handler(CollectEventHandler.create());
 
         router.route("/health").handler(healthCheckHandler);
 

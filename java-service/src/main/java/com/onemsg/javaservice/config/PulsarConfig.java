@@ -2,6 +2,7 @@ package com.onemsg.javaservice.config;
 
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @EnableConfigurationProperties
 @ConfigurationProperties("spring.pulsar.client")
 @Setter
+@ConditionalOnProperty(name = "app.use.pulsar", havingValue = "true")
 public class PulsarConfig {
 
     private String serviceUrl;

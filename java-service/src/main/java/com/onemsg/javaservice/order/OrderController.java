@@ -2,8 +2,8 @@ package com.onemsg.javaservice.order;
 
 import java.net.URI;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.onemsg.javaservice.order.model.OrderCreationRequest;
 
+@ConditionalOnProperty(name = "app.use.pulsar", havingValue = "true")
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {

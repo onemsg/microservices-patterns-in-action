@@ -30,8 +30,8 @@ import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.client.impl.schema.JSONSchema;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.onemsg.javaservice.event.AccountingCommand;
@@ -48,6 +48,7 @@ import com.onemsg.javaservice.order.model.OrderCreationRequest;
 import lombok.extern.slf4j.Slf4j;
 
 
+@ConditionalOnProperty(name = "app.use.pulsar", havingValue = "true")
 @Slf4j
 @Service
 public class OrderService implements DisposableBean {
